@@ -1,0 +1,68 @@
+{
+  "phases": [
+    {
+      "id": 1,
+      "name": "CompTIA A+",
+      "status": "complete",
+      "certifications": "Core 1 & 2",
+      "targetDate": "May 2026",
+      "icon": "📚",
+      "githubRepo": "https://github.com/Whitedonrocks/Notes_CyberSec/tree/master/Phase_1/"
+    },
+    {
+      "id": 2,
+      "name": "Networking (CCNA 200-301)",
+      "status": "in-progress",
+      "certifications": "CCNA 200-301",
+      "targetDate": "Aug 2026",
+      "icon": "🌐",
+      "current": true,
+      "githubRepo": "https://github.com/Whitedonrocks/Notes_CyberSec/tree/master/Phase_2/"
+    },
+    {
+      "id": 3,
+      "name": "Linux & Python Automation",
+      "status": "upcoming",
+      "certifications": "LPIC-1",
+      "targetDate": "Oct 2026",
+      "icon": "🐧",
+      "githubRepo": "https://github.com/Whitedonrocks/Notes_CyberSec/tree/master/Phase_3/"
+    },
+    {
+      "id": 4,
+      "name": "Security Fundamentals",
+      "status": "upcoming",
+      "certifications": "CEH Prerequisites",
+      "targetDate": "Dec 2026",
+      "icon": "🔐",
+      "githubRepo": "https://github.com/Whitedonrocks/Notes_CyberSec/tree/master/Phase_4/"
+    },
+    {
+      "id": 5,
+      "name": "Practical Hacking",
+      "status": "upcoming",
+      "certifications": "OSCP Track",
+      "targetDate": "Feb 2027",
+      "icon": "⚔️",
+      "githubRepo": "https://github.com/Whitedonrocks/Notes_CyberSec/tree/master/Phase_5/"
+    },
+    {
+      "id": 6,
+      "name": "HTB & CTF Building",
+      "status": "upcoming",
+      "certifications": "HackTheBox",
+      "targetDate": "Apr 2027",
+      "icon": "🎯",
+      "githubRepo": "https://github.com/Whitedonrocks/Notes_CyberSec/tree/master/Phase_6"
+    },
+    {
+      "id": 7,
+      "name": "Professional Certs",
+      "status": "upcoming",
+      "certifications": "eJPT/PJPT",
+      "targetDate": "Jun 2027",
+      "icon": "🏆",
+      "githubRepo": "https://github.com/Whitedonrocks/Notes_CyberSec/tree/master/Phase_7/"
+    }
+  ]
+}

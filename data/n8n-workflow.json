@@ -1,0 +1,106 @@
+{
+  "name": "Daily Cyber Fact of the Day",
+  "nodes": [
+    {
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "parameters": {
+        "cronExpression": "0 7 * * *",
+        "timezone": "Asia/Kathmandu"
+      }
+    },
+    {
+      "name": "Get Random Cyber Fact",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [450, 300],
+      "parameters": {
+        "url": "https://raw.githubusercontent.com/Whitedonrocks/Notes_CyberSec/main/cyber-facts.json",
+        "method": "GET",
+        "responseFormat": "json"
+      }
+    },
+    {
+      "name": "Parse & Format Fact",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 1,
+      "position": [650, 300],
+      "parameters": {
+        "jsCode": "const facts = $input.all()[0].json.facts;\nconst randomIndex = Math.floor(Math.random() * facts.length);\nconst todaysFact = facts[randomIndex];\n\nreturn {\n  json: {\n    fact: todaysFact.fact,\n    category: todaysFact.category,\n    severity: todaysFact.severity,\n    timestamp: new Date().toISOString(),\n    formatted: `🔒 Cyber Fact of the Day\\n\\n${todaysFact.fact}\\n\\nCategory: ${todaysFact.category} | Severity: ${todaysFact.severity}`\n  }\n};"
+      }
+    },
+    {
+      "name": "Send Email Notification",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [850, 200],
+      "parameters": {
+        "fromEmail": "noreply@portfolio.local",
+        "toEmail": "your-email@example.com",
+        "subject": "🔒 Cyber Fact of the Day",
+        "emailType": "html",
+        "htmlBody": "={{ $json.formatted }}"
+      }
+    },
+    {
+      "name": "Send Slack Message",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 1,
+      "position": [850, 350],
+      "parameters": {
+        "authentication": "oAuth2",
+        "channel": "#cyber-facts",
+        "text": "={{ $json.formatted }}"
+      }
+    },
+    {
+      "name": "Update Website Widget",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [850, 500],
+      "parameters": {
+        "url": "https://your-portfolio.com/api/update-fact",
+        "method": "POST",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "body": "={{ JSON.stringify($json) }}"
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [[{ "node": "Get Random Cyber Fact", "type": "main", "index": 0 }]]
+    },
+    "Get Random Cyber Fact": {
+      "main": [[{ "node": "Parse & Format Fact", "type": "main", "index": 0 }]]
+    },
+    "Parse & Format Fact": {
+      "main": [
+        [
+          { "node": "Send Email Notification", "type": "main", "index": 0 },
+          { "node": "Send Slack Message", "type": "main", "index": 0 },
+          { "node": "Update Website Widget", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "tags": ["cybersecurity", "automation", "daily"],
+  "meta": {
+    "description": "Automatically sends a daily cybersecurity fact via email, Slack, and updates the portfolio website",
+    "deployedOn": "2026-05-04",
+    "author": "Prayag"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "buildCommand": "echo 'Static site - no build needed'",
+  "outputDirectory": ".",
+  "functions": {
+    "api/get-fact.js": {
+      "memory": 1024,
+      "maxDuration": 60
+    }
+  },
+  "env": {
+    "HUGGING_FACE_TOKEN": "@hugging_face_token"
+  }
+}

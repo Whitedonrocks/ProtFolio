@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prayag | CSIT & Cybersecurity</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- SCANLINE OVERLAY -->
+  <div class="scanlines" aria-hidden="true"></div>
+  <!-- GRID BACKGROUND -->
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <!-- ===== NAV ===== -->
+  <header id="navbar">
+    <nav class="nav-inner">
+      <a href="#hero" class="nav-logo">&gt; prayag<span class="accent">_</span></a>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links" id="nav-links">
+        <li><a href="#about"     class="nav-link">about</a></li>
+        <li><a href="#certs"     class="nav-link">certs</a></li>
+        <li><a href="#leadership"class="nav-link">leadership</a></li>
+        <li><a href="#projects"  class="nav-link">projects</a></li>
+        <li><a href="#insight"   class="nav-link">insight</a></li>
+        <li><a href="#contact"   class="nav-link">contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===== HERO ===== -->
+    <section id="hero">
+      <div class="hero-inner">
+        <h1 class="hero-title">
+          <span class="line1" id="typed-name"></span><br />
+          <span class="line2 accent">B.Sc. CSIT Student<br class="mobile-br" /> &amp; Cybersecurity Enthusiast</span>
+        </h1>
+        <p class="hero-sub">
+          Himalaya College of Engineering &nbsp;|&nbsp; 5th Semester<br />
+          Networking · Linux · OS Security · CTF
+        </p>
+        <div class="hero-actions">
+          <a href="#projects" class="btn btn-primary">View Projects</a>
+          <div class="cert-badge" id="cert-badge" aria-hidden="true">
+            <span class="badge-dot"></span>
+            <span class="badge-text">Certs:</span>
+            <span class="badge-phase" id="badge-phase">CCNA 200-301</span>
+            <span class="badge-pct" id="badge-pct">~55%</span>
+          </div>
+        </div>
+        <div class="hero-status" id="hero-status">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Next exam: —</span>
+        </div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div id="kali-terminal" class="kali-terminal">
+          <div class="terminal-header">
+            <span class="terminal-title">root@prayag:~#</span>
+            <span class="terminal-section-indicator" id="section-indicator">[ portfolio ]</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-output" id="terminal-output">
+            </div>
+            <div class="terminal-input-line">
+              <span class="prompt">root@prayag:~# </span>
+              <input 
+                type="text" 
+                id="terminal-input" 
+                class="terminal-input" 
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== ABOUT ===== -->
+    <section id="about" class="section">
+      <div class="section-label">// 01 — ABOUT</div>
+      <h2 class="section-title">About <span class="accent">Me</span></h2>
+      <div class="about-grid">
+        <div class="about-photo">
+          <div class="photo-frame">
+            <img src="./assets/images/profile-picture.jpeg" alt="Prayag - CSIT Student" class="profile-image" />
+            <div class="photo-border" aria-hidden="true"></div>
+          </div>
+          <p class="photo-caption">Prayag | CSIT Student | Kathmandu 🇳🇵</p>
+        </div>
+        <div class="about-text">
+          <p>
+            I'm a 5th-semester B.Sc. CSIT student at Himalaya College of Engineering,
+            passionate about the intersection of <span class="accent">system internals</span>,
+            networking, and cybersecurity. I believe understanding the OS is the
+            foundation of every security discipline.
+          </p>
+          <p>
+            My daily environment switches between <strong>Windows 11</strong> for
+            productivity and <strong>Ubuntu 24.04</strong> for hands-on system
+            administration, scripting, and security tooling.
+          </p>
+          <div class="about-links">
+            <a href="https://github.com/Whitedonrocks" target="_blank" class="link-badge">💻 GitHub Projects</a>
+          </div>
+        </div>
+        <div class="about-skills">
+          <div class="skill-block">
+            <div class="skill-header">
+              <span class="skill-icon">⬛</span>
+              <span>Operating Systems</span>
+            </div>
+            <div class="skill-tags">
+              <span class="tag">Windows 11</span>
+              <span class="tag">Ubuntu 24.04 LTS</span>
+              <span class="tag">Linux CLI</span>
+              <span class="tag">Bash Scripting</span>
+            </div>
+          </div>
+          <div class="skill-block">
+            <div class="skill-header">
+              <span class="skill-icon">⬛</span>
+              <span>Languages &amp; Tools</span>
+            </div>
+            <div class="skill-tags">
+              <span class="tag">C Programming</span>
+              <span class="tag">Python</span>
+              <span class="tag">Cisco IOS</span>
+              <span class="tag">Packet Tracer</span>
+              <span class="tag">Wireshark</span>
+            </div>
+          </div>
+          <div class="skill-block">
+            <div class="skill-header">
+              <span class="skill-icon">⬛</span>
+              <span>Focus Areas</span>
+            </div>
+            <div class="skill-tags">
+              <span class="tag">Network Security</span>
+              <span class="tag">OS Internals</span>
+              <span class="tag">Linux Admin</span>
+              <span class="tag">TCP/IP</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== CERTS ===== -->
+    <section id="certs" class="section">
+      <div class="section-label">// 02 — CERTIFICATIONS</div>
+      <h2 class="section-title">Cert <span class="accent">Roadmap</span></h2>
+      
+      <p class="section-sub">A structured 7-phase journey from foundation to mastery.</p>
+      
+      <div class="cert-intro">
+        <p>
+          I'm pursuing a strategic pathway to becoming a <span class="accent">cybersecurity professional</span>. 
+          Each phase builds foundational knowledge—from hardware and networking through advanced penetration testing 
+          and vulnerability assessment.
+        </p>
+        <p>
+          My goal is to develop a comprehensive skill set that combines <span class="accent">theoretical understanding 
+          with hands-on practical experience</span>, enabling me to tackle real-world cybersecurity challenges with confidence. 
+          <strong>Note:</strong> These represent my planned study phases and target dates. Certification exams will be 
+          taken upon completing each phase's material.
+        </p>
+      </div>
+
+      <div class="cert-scroll-container">
+        <div class="cert-track">
+
+          <div class="cert-card done" data-phase="01">
+            <div class="cert-phase">Phase 01</div>
+            <div class="cert-status-badge done-badge">✓ COMPLETE</div>
+            <div class="cert-logo comptia">CompTIA</div>
+            <h3 class="cert-name">A+ Core 1 &amp; 2</h3>
+            <p class="cert-desc">
+              Hardware, networking fundamentals, OS troubleshooting,
+              security basics, and operational procedures.
+            </p>
+            <div class="cert-progress-bar">
+              <div class="cert-progress-fill" style="--fill: 100%"></div>
+            </div>
+            <span class="cert-pct">100%</span>
+          </div>
+
+          <div class="cert-connector" aria-hidden="true">
+            <div class="connector-line"></div>
+            <div class="connector-arrow">▼</div>
+          </div>
+
+          <div class="cert-card active" data-phase="02">
+            <div class="cert-phase">Phase 02</div>
+            <div class="cert-status-badge active-badge">⟳ IN PROGRESS</div>
+            <div class="cert-logo cisco">Cisco</div>
+            <h3 class="cert-name">CCNA 200-301</h3>
+            <p class="cert-desc">
+              Routing &amp; switching, VLANs, OSPF, ACLs, network security
+              fundamentals, and IPv6 implementation.
+            </p>
+            <div class="cert-progress-bar">
+              <div class="cert-progress-fill active-fill" style="--fill: 55%"></div>
+            </div>
+            <span class="cert-pct">~55%</span>
+          </div>
+
+          <div class="cert-connector" aria-hidden="true">
+            <div class="connector-line"></div>
+            <div class="connector-arrow">▼</div>
+          </div>
+
+          <div class="cert-card pending" data-phase="03">
+            <div class="cert-phase">Phase 03</div>
+            <div class="cert-status-badge pending-badge">◌ UPCOMING</div>
+            <div class="cert-logo linux">Linux</div>
+            <h3 class="cert-name">Linux &amp; Python</h3>
+            <p class="cert-desc">
+              LPIC-1 certification: Linux system administration, scripting,
+              Python automation, and shell programming fundamentals.
+            </p>
+            <div class="cert-progress-bar">
+              <div class="cert-progress-fill" style="--fill: 0%"></div>
+            </div>
+            <span class="cert-pct">Oct 2026</span>
+          </div>
+
+          <div class="cert-connector" aria-hidden="true">
+            <div class="connector-line"></div>
+            <div class="connector-arrow">▼</div>
+          </div>
+
+          <div class="cert-card pending" data-phase="04">
+            <div class="cert-phase">Phase 04</div>
+            <div class="cert-status-badge pending-badge">◌ UPCOMING</div>
+            <div class="cert-logo security">Security</div>
+            <h3 class="cert-name">Security Fundamentals</h3>
+            <p class="cert-desc">
+              CEH prerequisites: Cryptography, access control, common vulnerabilities,
+              threat assessment, and security architecture principles.
+            </p>
+            <div class="cert-progress-bar">
+              <div class="cert-progress-fill" style="--fill: 0%"></div>
+            </div>
+            <span class="cert-pct">Dec 2026</span>
+          </div>
+
+          <div class="cert-connector" aria-hidden="true">
+            <div class="connector-line"></div>
+            <div class="connector-arrow">▼</div>
+          </div>
+
+          <div class="cert-card pending" data-phase="05">
+            <div class="cert-phase">Phase 05</div>
+            <div class="cert-status-badge pending-badge">◌ UPCOMING</div>
+            <div class="cert-logo oscp">Hacking</div>
+            <h3 class="cert-name">Practical Hacking</h3>
+            <p class="cert-desc">
+              OSCP prerequisites: Penetration testing techniques, exploitation,
+              post-exploitation, and advanced network security concepts.
+            </p>
+            <div class="cert-progress-bar">
+              <div class="cert-progress-fill" style="--fill: 0%"></div>
+            </div>
+            <span class="cert-pct">Feb 2027</span>
+          </div>
+
+          <div class="cert-connector" aria-hidden="true">
+            <div class="connector-line"></div>
+            <div class="connector-arrow">▼</div>
+          </div>
+
+          <div class="cert-card pending" data-phase="06">
+            <div class="cert-phase">Phase 06</div>
+            <div class="cert-status-badge pending-badge">◌ UPCOMING</div>
+            <div class="cert-logo ctf">CTF</div>
+            <h3 class="cert-name">HackTheBox &amp; CTF</h3>
+            <p class="cert-desc">
+              Hands-on capture the flag challenges, real-world scenarios,
+              and advanced exploitation techniques on HackTheBox platform.
+            </p>
+            <div class="cert-progress-bar">
+              <div class="cert-progress-fill" style="--fill: 0%"></div>
+            </div>
+            <span class="cert-pct">Apr 2027</span>
+          </div>
+
+          <div class="cert-connector" aria-hidden="true">
+            <div class="connector-line"></div>
+            <div class="connector-arrow">▼</div>
+          </div>
+
+          <div class="cert-card pending" data-phase="07">
+            <div class="cert-phase">Phase 07</div>
+            <div class="cert-status-badge pending-badge">◌ UPCOMING</div>
+            <div class="cert-logo elearnsec">Professional</div>
+            <h3 class="cert-name">eJPT &amp; PJPT</h3>
+            <p class="cert-desc">
+              eLearnSecurity Junior &amp; Professional certifications:
+              Advanced penetration testing and professional security expertise.
+            </p>
+            <div class="cert-progress-bar">
+              <div class="cert-progress-fill" style="--fill: 0%"></div>
+            </div>
+            <span class="cert-pct">Jun 2027</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== LEADERSHIP ===== -->
+    <section id="leadership" class="section">
+      <div class="section-label">// 03 — LEADERSHIP</div>
+      <h2 class="section-title">Community <span class="accent">Role</span></h2>
+      
+      <div class="leadership-experience">
+        <div class="exp-header">
+          <div class="exp-logo">
+            <img src="./assets/images/treasurer-logo.png" alt="CSIT Association Logo" />
+          </div>
+          <div class="exp-org-info">
+            <h3 class="exp-org">CSIT Association of Nepal</h3>
+            <p class="exp-type">Organization · 9 mos</p>
+            <p class="exp-location">Hybrid</p>
+          </div>
+        </div>
+
+        <div class="exp-role">
+          <div class="role-header">
+            <h4 class="role-title">Treasurer</h4>
+            <p class="role-date">Apr 2026 - Present · 2 mos</p>
+          </div>
+          <p class="role-skills">💼 Event Management, Budget Management and Financial Planning</p>
+        </div>
+
+        <div class="exp-role">
+          <div class="role-header">
+            <h4 class="role-title">Executive Committee Member</h4>
+            <p class="role-date">Sep 2025 - Apr 2026 · 8 mos</p>
+          </div>
+          <p class="role-skills">📢 Communication, Strategic Planning and Community Engagement</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROJECTS ===== -->
+    <section id="projects" class="section">
+      <div class="section-label">// 04 — PROJECTS</div>
+      <h2 class="section-title">Technical <span class="accent">Work</span></h2>
+      <div class="projects-grid">
+
+        <a href="https://github.com/Whitedonrocks" target="_blank" rel="noopener" class="project-card featured-card">
+          <div class="project-card-inner">
+            <div class="project-type">GitHub Profile</div>
+            <div class="project-icon">👤</div>
+            <h3 class="project-name">Main Portfolio</h3>
+            <p class="project-desc">
+              All cybersecurity projects, Cisco Packet Tracer labs, Python scripts, 
+              and system administration tools. Explore my complete technical journey 
+              and open-source contributions.
+            </p>
+            <div class="project-stack">
+              <span class="tag">GitHub</span>
+              <span class="tag">Projects</span>
+              <span class="tag">Labs</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </a>
+
+        <a href="https://github.com/Whitedonrocks/E-Commerce-Nike-Replica-" target="_blank" rel="noopener" class="project-card">
+          <div class="project-card-inner">
+            <div class="project-type">Frontend Development</div>
+            <div class="project-icon">🛍️</div>
+            <h3 class="project-name">E-Commerce Nike Replica</h3>
+            <p class="project-desc">
+              Full-featured e-commerce interface replicating Nike's design. 
+              Built with HTML, CSS, and JavaScript for responsive shopping experience.
+            </p>
+            <div class="project-stack">
+              <span class="tag">HTML5</span>
+              <span class="tag">CSS3</span>
+              <span class="tag">JavaScript</span>
+              <span class="tag">Responsive</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </a>
+
+        <a href="https://github.com/Whitedonrocks/CiscoPacketTracer" target="_blank" rel="noopener" class="project-card">
+          <div class="project-card-inner">
+            <div class="project-type">Network Design & Simulation</div>
+            <div class="project-icon">🌐</div>
+            <h3 class="project-name">Cisco Packet Tracer</h3>
+            <p class="project-desc">
+              Network design and routing simulation using Cisco Packet Tracer. VLAN configuration, 
+              inter-VLAN routing, DHCP static & dynamic routing. Troubleshooting connectivity issues 
+              and ensuring network resilience.
+            </p>
+            <div class="project-stack">
+              <span class="tag">Networking</span>
+              <span class="tag">Packet Tracer</span>
+              <span class="tag">VLAN</span>
+              <span class="tag">Routing</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </a>
+
+        <a href="https://github.com/Whitedonrocks/OpenGL-Project" target="_blank" rel="noopener" class="project-card">
+          <div class="project-card-inner">
+            <div class="project-type">Computer Graphics</div>
+            <div class="project-icon">🎨</div>
+            <h3 class="project-name">OpenGL — Viewing & Lighting</h3>
+            <p class="project-desc">
+              3D graphics project with solid cube placed in center on surface. Mouse-aided lighting, 
+              shadow and reflection effects. Comprehensive understanding of core graphics concepts 
+              including coordinate systems and lighting.
+            </p>
+            <div class="project-stack">
+              <span class="tag">OpenGL</span>
+              <span class="tag">C++</span>
+              <span class="tag">3D Graphics</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </a>
+
+        <a href="https://github.com/Whitedonrocks/Profox-Replica-" target="_blank" rel="noopener" class="project-card">
+          <div class="project-card-inner">
+            <div class="project-type">Frontend Development</div>
+            <div class="project-icon">🦊</div>
+            <h3 class="project-name">Profox Replica</h3>
+            <p class="project-desc">
+              Professional portfolio website clone featuring responsive design,
+              modern UI patterns, smooth animations, and interactive components.
+            </p>
+            <div class="project-stack">
+              <span class="tag">HTML5</span>
+              <span class="tag">CSS3</span>
+              <span class="tag">JavaScript</span>
+            </div>
+            <div class="project-arrow">→</div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- ===== DAILY INSIGHT ===== -->
+    <section id="insight" class="section">
+      <div class="section-label">// 05 — DAILY INSIGHT</div>
+      <h2 class="section-title">Cyber <span class="accent">Fact</span> of the Day</h2>
+      <p class="section-sub">Auto-refreshed at 9 AM, 5 PM & 1 AM • Click button for instant new fact</p>
+      <div class="insight-wrapper">
+        <div class="insight-terminal">
+          <div class="terminal-bar">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+            <span class="terminal-title">cybersec_insight.sh</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-prompt">[root@prayag ~]$ ./get_insight.sh</div>
+            <div id="daily-fact" class="terminal-output">
+              <span class="fact-loading">Loading insight<span class="ellipsis"></span></span>
+            </div>
+            <div class="terminal-prompt after-fact" id="after-prompt" style="display:none;">[root@prayag ~]$ <span class="blink-cursor">█</span></div>
+          </div>
+        </div>
+        <button id="refresh-fact" class="btn btn-ghost refresh-btn">↻ New Fact</button>
+      </div>
+    </section>
+
+    <!-- ===== CONTACT ===== -->
+    <section id="contact" class="section">
+      <div class="section-label">// 06 — CONTACT</div>
+      <h2 class="section-title">Get in <span class="accent">Touch</span></h2>
+      <p class="contact-sub">Open to collaborations, study groups, and cybersecurity discussions.</p>
+      <div class="contact-links">
+        <a href="https://github.com/Whitedonrocks" target="_blank" class="contact-link">
+          <span class="contact-icon">&#9654;</span> GitHub
+        </a>
+        <a href="mailto:prayagnepal2060@gmail.com" class="contact-link">
+          <span class="contact-icon">&#9654;</span> Email
+        </a>
+        <a href="https://www.linkedin.com/in/prayagnepal/" target="_blank" class="contact-link">
+          <span class="contact-icon">&#9654;</span> LinkedIn
+        </a>
+      </div>
+      <p class="contact-locale">Based in Kathmandu, Nepal 🇳🇵</p>
+      <p class="contact-availability">💬 Open to collaborations and cybersecurity discussions</p>
+      <p class="contact-availability">⏰ Response time: Within 24 hours</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Prayag &mdash; Built with 0s and 1s &nbsp;|&nbsp; <span class="accent">root@prayag:~#</span></p>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>

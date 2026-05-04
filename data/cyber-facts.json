@@ -1,0 +1,101 @@
+{
+  "facts": [
+    {
+      "id": 1,
+      "fact": "The first computer virus, 'Creeper', was created in 1971 and displayed the message: 'I'm the creeper: catch me if you can!'",
+      "category": "history",
+      "severity": "low"
+    },
+    {
+      "id": 2,
+      "fact": "About 2.5 quintillion bytes of data are created every day. That's 2,500,000,000,000,000 bytes!",
+      "category": "data",
+      "severity": "medium"
+    },
+    {
+      "id": 3,
+      "fact": "The term 'phishing' was first used in 1995 and derives from 'fishing' – cybercriminals cast out bait to catch unwary internet users.",
+      "category": "attack",
+      "severity": "medium"
+    },
+    {
+      "id": 4,
+      "fact": "80% of cyber attacks are successful due to weak passwords. A strong password should have 12+ characters with mixed case, numbers, and symbols.",
+      "category": "best-practice",
+      "severity": "high"
+    },
+    {
+      "id": 5,
+      "fact": "The average time to detect a data breach is 207 days. Early detection can save millions in damages.",
+      "category": "threat-intel",
+      "severity": "high"
+    },
+    {
+      "id": 6,
+      "fact": "SSH (Secure Shell) was created in 1995 as a secure alternative to Telnet and rlogin protocols which sent credentials in plain text.",
+      "category": "protocols",
+      "severity": "low"
+    },
+    {
+      "id": 7,
+      "fact": "A vulnerability in an unpatched Windows system can be exploited within minutes of public disclosure.",
+      "category": "patching",
+      "severity": "high"
+    },
+    {
+      "id": 8,
+      "fact": "The Morris Worm of 1988 infected an estimated 6,000 computers (10% of the internet at the time) causing $10-100 million in damages.",
+      "category": "history",
+      "severity": "medium"
+    },
+    {
+      "id": 9,
+      "fact": "Two-Factor Authentication (2FA) can block 99.9% of account compromise attacks, even if your password is stolen.",
+      "category": "best-practice",
+      "severity": "high"
+    },
+    {
+      "id": 10,
+      "fact": "The CIA Triad (Confidentiality, Integrity, Availability) is the foundation of cybersecurity principles and guides all security frameworks.",
+      "category": "concepts",
+      "severity": "low"
+    },
+    {
+      "id": 11,
+      "fact": "SQL Injection attacks exploit improper input validation in web applications, allowing attackers to manipulate database queries.",
+      "category": "vulnerability",
+      "severity": "high"
+    },
+    {
+      "id": 12,
+      "fact": "Ransomware attacks cost businesses an average of $20,000+ per incident, with some enterprise attacks reaching millions.",
+      "category": "threat",
+      "severity": "high"
+    },
+    {
+      "id": 13,
+      "fact": "The OWASP Top 10 is a regularly updated list of the most critical web application security risks every developer should know.",
+      "category": "best-practice",
+      "severity": "medium"
+    },
+    {
+      "id": 14,
+      "fact": "A single exposed database with inadequate authentication can compromise millions of users' personal data in seconds.",
+      "category": "threat",
+      "severity": "high"
+    },
+    {
+      "id": 15,
+      "fact": "CTF (Capture The Flag) competitions are legal environments for practicing hacking and defensive security skills.",
+      "category": "learning",
+      "severity": "low"
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "lastUpdated": "2026-05-04",
+    "totalFacts": 15,
+    "updateFrequency": "weekly",
+    "author": "Prayag - CSIT Student"
+  }
+}
