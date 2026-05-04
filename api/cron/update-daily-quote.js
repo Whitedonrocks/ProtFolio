@@ -24,13 +24,31 @@ function pickRandomFact(facts) {
   };
 }
 
+function resolveRepositorySlug() {
+  // Vercel commonly provides owner/repo in separate vars.
+  const owner = process.env.VERCEL_GIT_REPO_OWNER;
+  const repoName = process.env.VERCEL_GIT_REPO_SLUG;
+
+  if (owner && repoName) {
+    return `${owner}/${repoName}`;
+  }
+
+  // Fall back to explicit owner/repo if user provided it.
+  if (process.env.GITHUB_REPOSITORY) {
+    return process.env.GITHUB_REPOSITORY;
+  }
+
+  // Last resort for backward compatibility (may be repo name only).
+  return repoName;
+}
+
 async function writeQuoteToGitHub(payload) {
-  const repo = process.env.VERCEL_GIT_REPO_SLUG || process.env.GITHUB_REPOSITORY;
+  const repo = resolveRepositorySlug();
   const branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.GITHUB_BRANCH || 'main';
   const token = process.env.GITHUB_TOKEN;
 
-  if (!repo) {
-    throw new Error('Missing repository slug');
+  if (!repo || !repo.includes('/')) {
+    throw new Error('Missing repository owner/name slug (expected owner/repo)');
   }
 
   if (!token) {
