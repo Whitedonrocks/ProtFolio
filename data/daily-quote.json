@@ -1,8 +1,8 @@
 {
-  "fact": "Two-Factor Authentication (2FA) can block 99.9% of account compromise attacks, even if your password is stolen.",
+  "fact": "The OWASP Top 10 is a regularly updated list of the most critical web application security risks every developer should know.",
   "category": "best-practice",
-  "severity": "high",
-  "updatedAt": "2026-05-04T00:00:00.000Z",
-  "source": "seed",
+  "severity": "medium",
+  "updatedAt": "2026-05-04T18:45:02.336Z",
+  "source": "vercel-cron",
   "publishedOn": "Mon May 04 2026"
 }
