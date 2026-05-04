@@ -1,3 +1,128 @@
+function resolveRepositorySlug() {
+  const owner = process.env.VERCEL_GIT_REPO_OWNER;
+  const repoName = process.env.VERCEL_GIT_REPO_SLUG;
+
+  if (owner && repoName) {
+    return `${owner}/${repoName}`;
+  }
+
+  if (process.env.GITHUB_REPOSITORY) {
+    return process.env.GITHUB_REPOSITORY;
+  }
+
+  return repoName;
+}
+
+function getNepalDateParts() {
+  const now = new Date();
+  const nepalDate = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kathmandu',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(now);
+
+  const publishedOn = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Kathmandu',
+    weekday: 'short',
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric'
+  }).format(now);
+
+  return { nepalDate, publishedOn };
+}
+
+const MANUAL_PERSIST_COOLDOWN_MS = 60 * 60 * 1000;
+
+function getGithubWriteConfig() {
+  const repo = resolveRepositorySlug();
+  const branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.GITHUB_BRANCH || 'main';
+  const token = process.env.GITHUB_TOKEN;
+
+  if (!repo || !repo.includes('/')) {
+    throw new Error('Missing repository owner/name slug (expected owner/repo)');
+  }
+
+  if (!token) {
+    throw new Error('Missing GITHUB_TOKEN');
+  }
+
+  const filePath = 'data/daily-quote.json';
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
+  const headers = {
+    Authorization: `Bearer ${token}`,
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28'
+  };
+
+  return { branch, apiUrl, headers };
+}
+
+async function getExistingQuoteData() {
+  const { branch, apiUrl, headers } = getGithubWriteConfig();
+  const existingResponse = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, { headers });
+
+  if (!existingResponse.ok) {
+    return null;
+  }
+
+  const existing = await existingResponse.json();
+  let parsedContent = null;
+
+  if (typeof existing.content === 'string') {
+    try {
+      const decoded = Buffer.from(existing.content.replace(/\n/g, ''), 'base64').toString('utf8');
+      parsedContent = JSON.parse(decoded);
+    } catch (err) {
+      parsedContent = null;
+    }
+  }
+
+  return {
+    sha: existing.sha,
+    data: parsedContent
+  };
+}
+
+async function writeQuoteToGitHub(payload) {
+  const { branch, apiUrl, headers } = getGithubWriteConfig();
+  const { nepalDate } = getNepalDateParts();
+
+  let sha;
+  const existing = await getExistingQuoteData();
+  if (existing?.sha) {
+    sha = existing.sha;
+  }
+
+  const content = Buffer.from(`${JSON.stringify(payload, null, 2)}\n`).toString('base64');
+  const body = {
+    message: `chore: update daily quote (manual) (${nepalDate})`,
+    content,
+    branch
+  };
+
+  if (sha) {
+    body.sha = sha;
+  }
+
+  const response = await fetch(apiUrl, {
+    method: 'PUT',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`GitHub update failed: ${errorText}`);
+  }
+
+  return response.json();
+}
+
 module.exports = async function handler(req, res) {
   // CORS headers for cross-origin requests
   const allowedOrigins = new Set([
@@ -67,17 +192,11 @@ module.exports = async function handler(req, res) {
       }
     );
 
-    if (!response.ok) {
-      return res.status(500).json({ 
-        error: 'AI service unavailable',
-        fact: 'Defense in depth is a security strategy that combines multiple layers of security controls to protect systems and data.' 
-      });
+    let generatedText = '';
+    if (response.ok) {
+      const result = await response.json();
+      generatedText = result[0]?.generated_text || result.generated_text || '';
     }
-
-    const result = await response.json();
-    
-    // Extract generated text
-    let generatedText = result[0]?.generated_text || result.generated_text || '';
     
     // Clean up response and reject malformed or oversized text
     if (typeof generatedText !== 'string') {
@@ -97,8 +216,57 @@ module.exports = async function handler(req, res) {
       generatedText = 'Always use strong, unique passwords and enable two-factor authentication for critical accounts.';
     }
 
+    const { publishedOn } = getNepalDateParts();
+    const quotePayload = {
+      fact: generatedText,
+      category: 'best-practice',
+      severity: 'medium',
+      updatedAt: new Date().toISOString(),
+      source: 'manual-refresh',
+      publishedOn
+    };
+
+    let commit = null;
+    let persisted = false;
+    let cooldownActive = false;
+    let cooldownRemainingMinutes = 0;
+    let lastPersistedAt = null;
+    let nextPersistAt = null;
+
+    try {
+      const existingQuote = await getExistingQuoteData();
+      const existingUpdatedAt = existingQuote?.data?.updatedAt;
+      const existingUpdatedAtMs = existingUpdatedAt ? Date.parse(existingUpdatedAt) : NaN;
+
+      if (Number.isFinite(existingUpdatedAtMs)) {
+        lastPersistedAt = new Date(existingUpdatedAtMs).toISOString();
+        const elapsedMs = Date.now() - existingUpdatedAtMs;
+        if (elapsedMs < MANUAL_PERSIST_COOLDOWN_MS) {
+          cooldownActive = true;
+          const remainingMs = MANUAL_PERSIST_COOLDOWN_MS - elapsedMs;
+          cooldownRemainingMinutes = Math.max(1, Math.ceil(remainingMs / 60000));
+          nextPersistAt = new Date(existingUpdatedAtMs + MANUAL_PERSIST_COOLDOWN_MS).toISOString();
+        }
+      }
+
+      if (!cooldownActive) {
+        const githubResult = await writeQuoteToGitHub(quotePayload);
+        commit = githubResult.commit?.sha || null;
+        persisted = true;
+      }
+    } catch (persistError) {
+      // Do not block user-facing fact refresh if git persistence fails.
+      console.error('Manual fact persistence failed:', persistError);
+    }
+
     res.status(200).json({ 
-      fact: generatedText
+      fact: generatedText,
+      persisted,
+      commit,
+      cooldownActive,
+      cooldownRemainingMinutes,
+      lastPersistedAt,
+      nextPersistAt
     });
   } catch (error) {
     console.error('AI API Error:', error);

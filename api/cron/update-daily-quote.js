@@ -42,10 +42,31 @@ function resolveRepositorySlug() {
   return repoName;
 }
 
+function getNepalDateParts() {
+  const now = new Date();
+  const nepalDate = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kathmandu',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(now);
+
+  const publishedOn = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Kathmandu',
+    weekday: 'short',
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric'
+  }).format(now);
+
+  return { nepalDate, publishedOn };
+}
+
 async function writeQuoteToGitHub(payload) {
   const repo = resolveRepositorySlug();
   const branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.GITHUB_BRANCH || 'main';
   const token = process.env.GITHUB_TOKEN;
+  const { nepalDate } = getNepalDateParts();
 
   if (!repo || !repo.includes('/')) {
     throw new Error('Missing repository owner/name slug (expected owner/repo)');
@@ -72,7 +93,7 @@ async function writeQuoteToGitHub(payload) {
 
   const content = Buffer.from(`${JSON.stringify(payload, null, 2)}\n`).toString('base64');
   const body = {
-    message: `chore: update daily quote (${new Date().toISOString().slice(0, 10)})`,
+    message: `chore: update daily quote (${nepalDate})`,
     content,
     branch
   };
@@ -113,6 +134,7 @@ module.exports = async function handler(req, res) {
   try {
     const facts = await loadFacts();
     const picked = pickRandomFact(facts);
+    const { publishedOn } = getNepalDateParts();
 
     const quotePayload = {
       fact: picked.fact,
@@ -120,7 +142,7 @@ module.exports = async function handler(req, res) {
       severity: picked.severity,
       updatedAt: new Date().toISOString(),
       source: 'vercel-cron',
-      publishedOn: new Date().toDateString()
+      publishedOn
     };
 
     const githubResult = await writeQuoteToGitHub(quotePayload);
