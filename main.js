@@ -353,6 +353,22 @@ async function getAIFact() {
   }
 }
 
+async function getScheduledFact() {
+  try {
+    const response = await fetch('./data/daily-quote.json', { cache: 'no-store' });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    return data && data.fact ? data : null;
+  } catch (error) {
+    console.error('Error fetching scheduled fact:', error);
+    return null;
+  }
+}
+
 function typeFactIntoTerminal(fact) {
   const el = document.getElementById('daily-fact');
   const afterPrompt = document.getElementById('after-prompt');
@@ -376,51 +392,67 @@ function typeFactIntoTerminal(fact) {
   typeChar();
 }
 
-// Auto-update at specific times: 9 AM, 5 PM, 1 AM
+// Keep the displayed quote in sync with the scheduled file.
 function setupAutoFactUpdates() {
-  const updateTimes = [1, 9, 17]; // 1 AM, 9 AM, 5 PM (24-hour format)
-  let lastUpdateTime = null;
+  async function syncScheduledFact() {
+    const scheduledFact = await getScheduledFact();
+    if (!scheduledFact?.fact) {
+      return;
+    }
 
-  async function checkAndUpdateFact() {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const timeKey = `${now.toDateString()}-${currentHour}`;
+    const factStamp = scheduledFact.updatedAt || scheduledFact.generatedAt || scheduledFact.fact;
+    const storedStamp = localStorage.getItem('lastFactStamp');
 
-    // If current hour matches one of our update times and we haven't updated this hour yet
-    if (updateTimes.includes(currentHour) && lastUpdateTime !== timeKey) {
-      lastUpdateTime = timeKey;
-      const newFact = await getAIFact(); // Use AI instead of static facts
-      localStorage.setItem('lastFact', newFact);
-      localStorage.setItem('lastFactDate', now.toDateString());
-      typeFactIntoTerminal(newFact);
+    if (storedStamp !== factStamp) {
+      localStorage.setItem('lastFact', scheduledFact.fact);
+      localStorage.setItem('lastFactDate', new Date().toDateString());
+      localStorage.setItem('lastFactStamp', factStamp);
+      typeFactIntoTerminal(scheduledFact.fact);
     }
   }
 
-  // Check every minute for scheduled updates
-  setInterval(checkAndUpdateFact, 60000);
-  
+  // Check periodically so a long-open tab picks up the next cron-generated quote.
+  setInterval(syncScheduledFact, 15 * 60 * 1000);
+
   // Initial check on page load
-  checkAndUpdateFact();
+  syncScheduledFact();
 }
 
 // Init on load
 document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     const today = new Date().toDateString();
-    const lastFactDate = localStorage.getItem('lastFactDate');
     const lastFact = localStorage.getItem('lastFact');
+    const lastFactStamp = localStorage.getItem('lastFactStamp');
 
-    // Show last fact if same day, otherwise load new one
-    if (lastFactDate === today && lastFact) {
-      typeFactIntoTerminal(lastFact);
-    } else {
+    (async () => {
+      const scheduledFact = await getScheduledFact();
+
+      if (scheduledFact?.fact) {
+        const factStamp = scheduledFact.updatedAt || scheduledFact.generatedAt || scheduledFact.fact;
+        if (lastFactStamp !== factStamp || !lastFact) {
+          localStorage.setItem('lastFact', scheduledFact.fact);
+          localStorage.setItem('lastFactDate', today);
+          localStorage.setItem('lastFactStamp', factStamp);
+        }
+
+        typeFactIntoTerminal(scheduledFact.fact);
+        return;
+      }
+
+      if (lastFact) {
+        typeFactIntoTerminal(lastFact);
+        return;
+      }
+
       const newFact = getRandomFact();
       localStorage.setItem('lastFact', newFact);
       localStorage.setItem('lastFactDate', today);
+      localStorage.setItem('lastFactStamp', newFact);
       typeFactIntoTerminal(newFact);
-    }
+    })();
 
-    // Setup automatic updates at 9 AM, 5 PM, 1 AM
+    // Keep the displayed fact in sync with the cron-generated file.
     setupAutoFactUpdates();
   }, 400);
 });

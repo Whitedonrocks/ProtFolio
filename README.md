@@ -78,20 +78,21 @@ See linked GitHub repositories:
 ## 💡 Daily Learning Insight
 
 ### Cyber Fact of the Day
-We're implementing an **n8n automation workflow** to deliver daily cybersecurity insights:
+The portfolio now uses a **Vercel Cron job** to publish one scheduled quote per day into `data/daily-quote.json`:
 
 **Automation Setup**:
-- **Trigger**: Daily schedule (7:00 AM or custom time)
-- **Data Source**: Cyber facts API / Local database
-- **Channels**: Email, Slack, Discord, or Web widget
-- **Frequency**: One fact per day
+- **Trigger**: Vercel Cron running once per day
+- **Storage**: GitHub repo file updated by the cron job
+- **Frontend Source**: `data/daily-quote.json`
+- **Fallback**: Manual refresh still uses the API route for an instant new fact
 
-**To Deploy n8n Integration**:
-1. Set up n8n instance (self-hosted or n8n.cloud)
-2. Create workflow with HTTP trigger or schedule trigger
-3. Configure data source (REST API or JSON file in `/data/cyber-facts.json`)
-4. Set notification channel (webhook to frontend or email)
-5. Deploy & activate
+**To Deploy the Vercel Automation**:
+1. Add `GITHUB_TOKEN` to the Vercel project environment variables with permission to update the repo contents.
+2. Keep `HUGGING_FACE_TOKEN` set for the manual instant-fact API route.
+3. Deploy the repo on Vercel.
+4. Let Vercel Cron call `/api/cron/update-daily-quote` daily at `15 1 * * *` UTC, which is 7:00 AM Nepal Time.
+5. Confirm `data/daily-quote.json` updates in GitHub after the first cron run.
+6. Verify the live site shows the committed daily quote.
 
 ---
 
