@@ -146,7 +146,7 @@ The website references this in the About section.
 
 ## 📞 Contact & Social
 
-- **Email**: [Your email]
+- **Email**: prayagnepal2060@gmail.com
 - **GitHub**: [@Whitedonrocks](https://github.com/Whitedonrocks)
 - **Location**: Kathmandu, Nepal
 
