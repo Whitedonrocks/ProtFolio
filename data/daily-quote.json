@@ -1,8 +1,8 @@
 {
-  "fact": "The OWASP Top 10 is a regularly updated list of the most critical web application security risks every developer should know.",
+  "fact": "Always use strong, unique passwords and enable two-factor authentication for critical accounts.",
   "category": "best-practice",
   "severity": "medium",
-  "updatedAt": "2026-05-04T18:45:02.336Z",
-  "source": "vercel-cron",
-  "publishedOn": "Mon May 04 2026"
+  "updatedAt": "2026-05-04T19:49:42.482Z",
+  "source": "manual-refresh",
+  "publishedOn": "Tue, May 05, 2026"
 }
