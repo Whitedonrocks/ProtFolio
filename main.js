@@ -123,6 +123,8 @@
   const input = document.getElementById('terminal-input');
   const output = document.getElementById('terminal-output');
   const sectionIndicator = document.getElementById('section-indicator');
+  const MAX_COMMAND_LENGTH = 80;
+  const COMMAND_PATTERN = /^[a-z0-9 _-]+$/i;
   
   if (!input || !output) return;
 
@@ -151,13 +153,41 @@
     output.scrollTop = output.scrollHeight;
   }
 
-  function processCommand(cmd) {
-    const trimmed = cmd.trim().toLowerCase();
-    
-    // Show the command that was typed
-    addOutput(`root@prayag:~# ${cmd}`);
+  function sanitizeCommand(cmd) {
+    if (typeof cmd !== 'string') {
+      return { ok: false, reason: 'invalid input' };
+    }
 
-    if (!trimmed) return;
+    const normalized = cmd.replace(/\s+/g, ' ').trim().toLowerCase();
+
+    if (!normalized) {
+      return { ok: false, reason: 'empty input' };
+    }
+
+    if (normalized.length > MAX_COMMAND_LENGTH) {
+      return { ok: false, reason: 'input too long' };
+    }
+
+    if (!COMMAND_PATTERN.test(normalized)) {
+      return { ok: false, reason: 'malformed input' };
+    }
+
+    return { ok: true, value: normalized };
+  }
+
+  function processCommand(cmd) {
+    const sanitized = sanitizeCommand(cmd);
+    
+    if (!sanitized.ok) {
+      addOutput('input rejected: command must be short and contain only letters, numbers, spaces, hyphens, or underscores.');
+      addOutput('');
+      return;
+    }
+
+    const trimmed = sanitized.value;
+
+    // Show the sanitized command that was typed
+    addOutput(`root@prayag:~# ${trimmed}`);
 
     if (trimmed === 'clear') {
       output.innerHTML = '';
@@ -518,7 +548,7 @@ document.getElementById('refresh-fact')?.addEventListener('click', async () => {
         if (phase && phase.githubRepo) {
           card.style.cursor = 'pointer';
           card.addEventListener('click', () => {
-            window.open(phase.githubRepo, '_blank');
+            window.open(phase.githubRepo, '_blank', 'noopener,noreferrer');
           });
         }
       });
