@@ -1,8 +1,8 @@
 {
-  "fact": "The Morris Worm of 1988 infected an estimated 6,000 computers (10% of the internet at the time) causing $10-100 million in damages.",
-  "category": "history",
+  "fact": "Always use strong, unique passwords and enable two-factor authentication for critical accounts.",
+  "category": "best-practice",
   "severity": "medium",
-  "updatedAt": "2026-05-05T01:43:04.937Z",
-  "source": "vercel-cron",
+  "updatedAt": "2026-05-05T03:28:52.432Z",
+  "source": "manual-refresh",
   "publishedOn": "Tue, May 05, 2026"
 }
