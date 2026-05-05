@@ -33,7 +33,7 @@ function getNepalDateParts() {
   return { nepalDate, publishedOn };
 }
 
-const MANUAL_PERSIST_COOLDOWN_MS = 60 * 60 * 1000;
+const MANUAL_PERSIST_COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
 
 function getGithubWriteConfig() {
   const repo = resolveRepositorySlug();
@@ -85,7 +85,7 @@ async function getExistingQuoteData() {
   };
 }
 
-async function writeQuoteToGitHub(payload) {
+async function writeFactsToGitHub(payload) {
   const { branch, apiUrl, headers } = getGithubWriteConfig();
   const { nepalDate } = getNepalDateParts();
 
@@ -97,7 +97,7 @@ async function writeQuoteToGitHub(payload) {
 
   const content = Buffer.from(`${JSON.stringify(payload, null, 2)}\n`).toString('base64');
   const body = {
-    message: `chore: update daily quote (manual) (${nepalDate})`,
+    message: `chore: add new AI fact #${payload.generationCount} (${nepalDate})`,
     content,
     branch
   };
@@ -177,99 +177,109 @@ module.exports = async function handler(req, res) {
   globalThis.__factApiHits.set(clientIp, recentHits);
 
   try {
-    const response = await fetch(
-      'https://api-inference.huggingface.co/models/mistral-community/Mistral-7B-Instruct-v0.1',
-      {
-        headers: { 
-          Authorization: `Bearer ${process.env.HUGGING_FACE_TOKEN}`
-        },
-        method: 'POST',
-        body: JSON.stringify({ 
-          inputs: `Generate a unique, educational cybersecurity fact or security tip in 1-2 sentences. 
-          Focus on threat prevention, security best practices, or cyber awareness. 
-          Make it concise and actionable. Do not include the prompt in response.`
-        }),
-      }
-    );
-
-    let generatedText = '';
-    if (response.ok) {
-      const result = await response.json();
-      generatedText = result[0]?.generated_text || result.generated_text || '';
-    }
+    // Load existing facts
+    const existingQuoteData = await getExistingQuoteData();
+    const data = existingQuoteData?.data;
     
-    // Clean up response and reject malformed or oversized text
-    if (typeof generatedText !== 'string') {
-      generatedText = '';
+    if (!data || !Array.isArray(data.facts) || data.facts.length === 0) {
+      return res.status(500).json({ error: 'No facts available' });
     }
 
-    generatedText = generatedText
-      .replace(/[\u0000-\u001F\u007F]/g, ' ')
-      .replace(/\s+/g, ' ')
-      .trim();
+    // Check if we need to generate a new AI fact (1 hour cooldown)
+    const lastGeneratedAt = data.lastGeneratedAt ? Date.parse(data.lastGeneratedAt) : NaN;
+    const nowMs = Date.now();
+    const cooldownActive = Number.isFinite(lastGeneratedAt) && (nowMs - lastGeneratedAt) < MANUAL_PERSIST_COOLDOWN_MS;
+    const cooldownRemainingMinutes = cooldownActive 
+      ? Math.max(1, Math.ceil((MANUAL_PERSIST_COOLDOWN_MS - (nowMs - lastGeneratedAt)) / 60000))
+      : 0;
 
-    if (generatedText.length > 400) {
-      generatedText = `${generatedText.slice(0, 400).trimEnd()}...`;
-    }
-
-    if (!generatedText) {
-      generatedText = 'Always use strong, unique passwords and enable two-factor authentication for critical accounts.';
-    }
-
-    const { publishedOn } = getNepalDateParts();
-    const quotePayload = {
-      fact: generatedText,
-      category: 'best-practice',
-      severity: 'medium',
-      updatedAt: new Date().toISOString(),
-      source: 'manual-refresh',
-      publishedOn
-    };
-
+    let newFact = null;
+    let generatedNewFact = false;
     let commit = null;
     let persisted = false;
-    let cooldownActive = false;
-    let cooldownRemainingMinutes = 0;
-    let lastPersistedAt = null;
-    let nextPersistAt = null;
 
-    try {
-      const existingQuote = await getExistingQuoteData();
-      const existingUpdatedAt = existingQuote?.data?.updatedAt;
-      const existingUpdatedAtMs = existingUpdatedAt ? Date.parse(existingUpdatedAt) : NaN;
+    // Only generate new AI fact if cooldown is not active
+    if (!cooldownActive) {
+      try {
+        const response = await fetch(
+          'https://api-inference.huggingface.co/models/mistral-community/Mistral-7B-Instruct-v0.1',
+          {
+            headers: { 
+              Authorization: `Bearer ${process.env.HUGGING_FACE_TOKEN}`
+            },
+            method: 'POST',
+            body: JSON.stringify({ 
+              inputs: `Generate a unique, educational cybersecurity fact or security tip in 1-2 sentences. 
+              Focus on threat prevention, security best practices, or cyber awareness. 
+              Make it concise and actionable. Do not include the prompt in response.`
+            }),
+          }
+        );
 
-      if (Number.isFinite(existingUpdatedAtMs)) {
-        lastPersistedAt = new Date(existingUpdatedAtMs).toISOString();
-        const elapsedMs = Date.now() - existingUpdatedAtMs;
-        if (elapsedMs < MANUAL_PERSIST_COOLDOWN_MS) {
-          cooldownActive = true;
-          const remainingMs = MANUAL_PERSIST_COOLDOWN_MS - elapsedMs;
-          cooldownRemainingMinutes = Math.max(1, Math.ceil(remainingMs / 60000));
-          nextPersistAt = new Date(existingUpdatedAtMs + MANUAL_PERSIST_COOLDOWN_MS).toISOString();
+        let generatedText = '';
+        if (response.ok) {
+          const result = await response.json();
+          generatedText = result[0]?.generated_text || result.generated_text || '';
         }
-      }
+        
+        // Clean up response
+        if (typeof generatedText !== 'string') {
+          generatedText = '';
+        }
 
-      if (!cooldownActive) {
-        const githubResult = await writeQuoteToGitHub(quotePayload);
-        commit = githubResult.commit?.sha || null;
-        persisted = true;
+        generatedText = generatedText
+          .replace(/[\u0000-\u001F\u007F]/g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        if (generatedText.length > 400) {
+          generatedText = `${generatedText.slice(0, 400).trimEnd()}...`;
+        }
+
+        if (generatedText && generatedText.length > 10) {
+          newFact = generatedText;
+          generatedNewFact = true;
+
+          // Append to facts array and update metadata
+          const updatedData = {
+            facts: [...data.facts, newFact],
+            lastGeneratedAt: new Date().toISOString(),
+            generationCount: data.generationCount + 1
+          };
+
+          try {
+            const githubResult = await writeFactsToGitHub(updatedData);
+            commit = githubResult.commit?.sha || null;
+            persisted = true;
+            data.facts.push(newFact);
+            data.lastGeneratedAt = updatedData.lastGeneratedAt;
+            data.generationCount = updatedData.generationCount;
+          } catch (persistError) {
+            console.error('Failed to persist new fact to GitHub:', persistError);
+          }
+        }
+      } catch (aiError) {
+        console.error('AI generation error:', aiError);
+        // Return a random existing fact if AI fails
       }
-    } catch (persistError) {
-      // Do not block user-facing fact refresh if git persistence fails.
-      console.error('Manual fact persistence failed:', persistError);
     }
 
-    res.status(200).json({ 
-      fact: generatedText,
+    // Pick a random fact from the array
+    const randomFact = data.facts[Math.floor(Math.random() * data.facts.length)];
+
+    res.status(200).json({
+      fact: newFact || randomFact,
+      facts: data.facts,
+      generationCount: data.generationCount,
+      lastGeneratedAt: data.lastGeneratedAt,
+      generatedNewFact,
       persisted,
       commit,
       cooldownActive,
-      cooldownRemainingMinutes,
-      lastPersistedAt,
-      nextPersistAt
+      cooldownRemainingMinutes
     });
   } catch (error) {
-    console.error('AI API Error:', error);
+    console.error('Get fact error:', error);
     res.status(500).json({ 
       error: error.message,
       fact: 'Keep your software and systems updated with the latest security patches to prevent known vulnerabilities from being exploited.'

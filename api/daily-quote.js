@@ -67,14 +67,19 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const githubQuote = await readGitHubQuote();
-    const quote = githubQuote || await readLocalQuote();
+    const githubData = await readGitHubQuote();
+    const data = githubData || await readLocalQuote();
 
-    if (!quote || typeof quote.fact !== 'string') {
-      return res.status(404).json({ error: 'Daily quote not found' });
+    if (!data || !Array.isArray(data.facts) || data.facts.length === 0) {
+      return res.status(404).json({ error: 'Daily quotes not found' });
     }
 
-    return res.status(200).json(quote);
+    // Return all facts so the client can pick a random one
+    return res.status(200).json({
+      facts: data.facts,
+      generationCount: data.generationCount,
+      lastGeneratedAt: data.lastGeneratedAt
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
