@@ -44,8 +44,12 @@ async function getExistingFactsData() {
   const branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.GITHUB_BRANCH || 'main';
   const token = process.env.GITHUB_TOKEN;
 
-  if (!repo || !repo.includes('/') || !token) {
-    return null;
+  if (!repo || !repo.includes('/')) {
+    throw new Error('Missing repository owner/name slug (expected owner/repo)');
+  }
+
+  if (!token) {
+    throw new Error('Missing GITHUB_TOKEN');
   }
 
   const filePath = 'data/daily-quote.json';
@@ -58,7 +62,7 @@ async function getExistingFactsData() {
 
   const response = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, { headers });
   if (!response.ok) {
-    return null;
+    throw new Error(`Failed to read existing daily quote from GitHub (${response.status})`);
   }
 
   const data = await response.json();
@@ -71,7 +75,7 @@ async function getExistingFactsData() {
     const parsed = JSON.parse(decoded);
     return { sha: data.sha, data: parsed };
   } catch (err) {
-    return null;
+    throw new Error(`Failed to parse existing daily quote JSON: ${err.message}`);
   }
 }
 
