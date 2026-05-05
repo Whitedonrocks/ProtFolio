@@ -280,7 +280,11 @@ function initKaliTerminal() {
    ══════════════════════════════════════ */
 function typedName() {
   const el = document.getElementById('typed-name');
-  if (!el) return;
+  console.log('typedName called, element:', el);
+  if (!el) {
+    console.error('typed-name element not found');
+    return;
+  }
 
   const text = 'Prayag Nepal';
   let i = 0;
@@ -288,6 +292,7 @@ function typedName() {
   function type() {
     if (i < text.length) {
       el.textContent += text[i++];
+      console.log('Typed:', el.textContent);
       setTimeout(type, 110);
     } else {
       // Remove the cursor after typing completes (CSS handles it for a while)
@@ -448,9 +453,11 @@ function setupAutoFactUpdates() {
 
 // Init on load
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('DOMContentLoaded fired');
   // Initialize terminal and typed name
   initKaliTerminal();
   typedName();
+  console.log('Both initKaliTerminal and typedName called');
   
   setTimeout(() => {
     const today = new Date().toDateString();
