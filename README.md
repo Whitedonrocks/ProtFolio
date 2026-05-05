@@ -90,9 +90,12 @@ The portfolio now uses a **Vercel Cron job** to publish one scheduled quote per 
 1. Add `GITHUB_TOKEN` to the Vercel project environment variables with permission to update the repo contents.
 2. Keep `HUGGING_FACE_TOKEN` set for the manual instant-fact API route.
 3. Deploy the repo on Vercel.
-4. Let Vercel Cron call `/api/cron/update-daily-quote` daily at `15 1 * * *` UTC, which is 7:00 AM Nepal Time.
+4. The cron is configured in `vercel.json` to run at `15 9 * * *` UTC (09:15 UTC = 3:00 PM Nepal Time).
 5. Confirm `data/daily-quote.json` updates in GitHub after the first cron run.
 6. Verify the live site shows the committed daily quote.
+
+**⚠️ Hobby Plan Timing Note**:  
+On Vercel's free Hobby plan, cron jobs are limited to once per day with loose timing precision. A job scheduled for 3:00 PM may fire anytime within that hour (e.g., 3:00–3:59 PM). The quote will still update daily, but not at an exact time. For precise timing, upgrade to Vercel Pro or use an external scheduler like n8n.
 
 ---
 
