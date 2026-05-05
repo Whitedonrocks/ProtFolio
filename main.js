@@ -462,54 +462,54 @@ if (document.readyState === 'loading') {
     console.log('Both initKaliTerminal and typedName called');
     
     setTimeout(() => {
-    const today = new Date().toDateString();
-    const lastFact = localStorage.getItem('lastFact');
-    const lastFactStamp = localStorage.getItem('lastFactStamp');
+      const today = new Date().toDateString();
+      const lastFact = localStorage.getItem('lastFact');
+      const lastFactStamp = localStorage.getItem('lastFactStamp');
 
-    (async () => {
-      const scheduledFact = await getScheduledFact();
+      (async () => {
+        const scheduledFact = await getScheduledFact();
 
-      if (scheduledFact?.fact) {
-        const factStamp = scheduledFact.updatedAt || scheduledFact.generatedAt || scheduledFact.fact;
-        if (lastFactStamp !== factStamp || !lastFact) {
-          localStorage.setItem('lastFact', scheduledFact.fact);
-          localStorage.setItem('lastFactDate', today);
-          localStorage.setItem('lastFactStamp', factStamp);
+        if (scheduledFact?.fact) {
+          const factStamp = scheduledFact.updatedAt || scheduledFact.generatedAt || scheduledFact.fact;
+          if (lastFactStamp !== factStamp || !lastFact) {
+            localStorage.setItem('lastFact', scheduledFact.fact);
+            localStorage.setItem('lastFactDate', today);
+            localStorage.setItem('lastFactStamp', factStamp);
+          }
+
+          typeFactIntoTerminal(scheduledFact.fact);
+          return;
         }
 
-        typeFactIntoTerminal(scheduledFact.fact);
-        return;
-      }
+        if (lastFact) {
+          typeFactIntoTerminal(lastFact);
+          return;
+        }
 
-      if (lastFact) {
-        typeFactIntoTerminal(lastFact);
-        return;
-      }
+        const newFact = getRandomFact();
+        localStorage.setItem('lastFact', newFact);
+        localStorage.setItem('lastFactDate', today);
+        localStorage.setItem('lastFactStamp', newFact);
+        typeFactIntoTerminal(newFact);
+      })();
 
-      const newFact = getRandomFact();
-      localStorage.setItem('lastFact', newFact);
-      localStorage.setItem('lastFactDate', today);
-      localStorage.setItem('lastFactStamp', newFact);
-      typeFactIntoTerminal(newFact);
-    })();
-
-    // Keep the displayed fact in sync with the cron-generated file.
-    setupAutoFactUpdates();
-    
-    // Set footer year dynamically
-    try {
-      const el = document.getElementById('footer-year');
-      const currentYear = String(new Date().getFullYear());
-      if (el) {
-        el.textContent = currentYear;
-        console.log('Footer year updated to:', currentYear);
-      }
-    } catch (e) { console.error('Footer year error:', e); }
-    
-    // Setup contact form
-    setupContactForm();
-  }, 400);
-});
+      // Keep the displayed fact in sync with the cron-generated file.
+      setupAutoFactUpdates();
+      
+      // Set footer year dynamically
+      try {
+        const el = document.getElementById('footer-year');
+        const currentYear = String(new Date().getFullYear());
+        if (el) {
+          el.textContent = currentYear;
+          console.log('Footer year updated to:', currentYear);
+        }
+      } catch (e) { console.error('Footer year error:', e); }
+      
+      // Setup contact form
+      setupContactForm();
+    }, 400);
+  });
 } else {
   console.log('Document already loaded, calling initKaliTerminal and typedName immediately');
   initKaliTerminal();
