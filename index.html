@@ -103,7 +103,7 @@
 
     <!-- ===== ABOUT ===== -->
     <section id="about" class="section">
-      <div class="section-label">// 01 — ABOUT</div>
+      <div class="section-label"><img class="section-icon" src="./assets/images/icons/about.svg" alt="about" /> // 01 — ABOUT</div>
       <h2 class="section-title">About <span class="accent">Me</span></h2>
       <div class="about-grid">
         <div class="about-photo">
@@ -173,7 +173,7 @@
 
     <!-- ===== CERTS ===== -->
     <section id="certs" class="section">
-      <div class="section-label">// 02 — CERTIFICATIONS</div>
+      <div class="section-label"><img class="section-icon" src="./assets/images/icons/certs.svg" alt="certs" /> // 02 — CERTIFICATIONS</div>
       <h2 class="section-title">Cert <span class="accent">Roadmap</span></h2>
       
       <p class="section-sub">A structured 7-phase journey from foundation to mastery.</p>
@@ -336,7 +336,7 @@
 
     <!-- ===== LEADERSHIP ===== -->
     <section id="leadership" class="section">
-      <div class="section-label">// 03 — LEADERSHIP</div>
+      <div class="section-label"><img class="section-icon" src="./assets/images/icons/leadership.svg" alt="leadership" /> // 03 — LEADERSHIP</div>
       <h2 class="section-title">Community <span class="accent">Role</span></h2>
       
       <div class="leadership-experience">
@@ -371,7 +371,7 @@
 
     <!-- ===== PROJECTS ===== -->
     <section id="projects" class="section">
-      <div class="section-label">// 04 — PROJECTS</div>
+      <div class="section-label"><img class="section-icon" src="./assets/images/icons/projects.svg" alt="projects" /> // 04 — PROJECTS</div>
       <h2 class="section-title">Technical <span class="accent">Work</span></h2>
       <div class="projects-grid">
 
@@ -475,7 +475,7 @@
 
     <!-- ===== DAILY INSIGHT ===== -->
     <section id="insight" class="section">
-      <div class="section-label">// 05 — DAILY INSIGHT</div>
+      <div class="section-label"><img class="section-icon" src="./assets/images/icons/insight.svg" alt="insight" /> // 05 — DAILY INSIGHT</div>
       <h2 class="section-title">Cyber <span class="accent">Fact</span> of the Day</h2>
       <p class="section-sub">Updated daily by Vercel Cron • Click button for instant new fact</p>
       <div class="insight-wrapper">
@@ -500,7 +500,7 @@
 
     <!-- ===== CONTACT ===== -->
     <section id="contact" class="section">
-      <div class="section-label">// 06 — CONTACT</div>
+      <div class="section-label"><img class="section-icon" src="./assets/images/icons/contact.svg" alt="contact" /> // 06 — CONTACT</div>
       <h2 class="section-title">Get in <span class="accent">Touch</span></h2>
       <p class="contact-sub">Open to collaborations, study groups, and cybersecurity discussions.</p>
       <div class="contact-links">
@@ -516,13 +516,31 @@
       </div>
       <p class="contact-locale">Based in Kathmandu, Nepal 🇳🇵</p>
       <p class="contact-availability">💬 Open to collaborations and cybersecurity discussions</p>
-      <p class="contact-availability">⏰ Response time: Within 24 hours</p>
+      <p class="contact-availability">Or use the form below to reach out directly.</p>
+      
+      <form id="contact-form" action="https://formspree.io/f/mvzlarrv" method="POST" class="contact-form">
+        <div class="form-group">
+          <label for="form-name" class="sr-only">Name</label>
+          <input type="text" id="form-name" name="name" placeholder="Your name" required />
+        </div>
+        <div class="form-group">
+          <label for="form-email" class="sr-only">Email</label>
+          <input type="email" id="form-email" name="_replyto" placeholder="Your email" required />
+        </div>
+        <div class="form-group">
+          <label for="form-message" class="sr-only">Message</label>
+          <textarea id="form-message" name="message" placeholder="Your message..." rows="5" required></textarea>
+        </div>
+        <input type="hidden" name="_subject" value="New contact from prayagn.com.np" />
+        <button type="submit" class="btn btn-primary">Send Message</button>
+        <div id="contact-status" aria-live="polite" aria-atomic="true"></div>
+      </form>
     </section>
 
   </main>
 
   <footer>
-    <p>&copy; 2025 Prayag &mdash; Built with 0s and 1s &nbsp;|&nbsp; <span class="accent">root@prayag:~#</span></p>
+    <p>&copy; <span id="footer-year">2026</span> Prayag &mdash; Built with 0s and 1s &nbsp;|&nbsp; <span class="accent">root@prayag:~#</span></p>
   </footer>
 
   <script src="main.js"></script>

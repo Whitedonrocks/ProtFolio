@@ -358,19 +358,25 @@ function getRandomFact() {
 async function getAIFact() {
   try {
     // Call Vercel serverless function (token is safe on server)
-    // Add a timestamp and no-store to avoid any caching at CDN/browser level
+    // Add a timestamp and no-store to avoid CDN/browser caching
     const response = await fetch(`/api/get-fact?ts=${Date.now()}`, { cache: 'no-store' });
 
     if (!response.ok) {
       console.warn('API failed, using static facts');
-      return getRandomFact();
+      return { fact: getRandomFact(), persisted: false };
     }
 
     const data = await response.json();
-    return data.fact || getRandomFact();
+    return {
+      fact: data.fact || getRandomFact(),
+      persisted: !!data.persisted,
+      commit: data.commit || null,
+      cooldownActive: !!data.cooldownActive,
+      cooldownRemainingMinutes: data.cooldownRemainingMinutes || 0
+    };
   } catch (error) {
     console.error('Error fetching AI fact:', error);
-    return getRandomFact(); // Fallback to static facts
+    return { fact: getRandomFact(), persisted: false };
   }
 }
 
@@ -475,22 +481,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Keep the displayed fact in sync with the cron-generated file.
     setupAutoFactUpdates();
+    
+    // Set footer year dynamically
+    try {
+      const el = document.getElementById('footer-year');
+      const currentYear = String(new Date().getFullYear());
+      if (el) {
+        el.textContent = currentYear;
+        console.log('Footer year updated to:', currentYear);
+      }
+    } catch (e) { console.error('Footer year error:', e); }
+    
+    // Setup contact form
+    setupContactForm();
   }, 400);
 });
 
-// Refresh button - manual update
-document.getElementById('refresh-fact')?.addEventListener('click', async () => {
-  const el = document.getElementById('daily-fact');
-  el.innerHTML = '<span class="fact-loading">Loading insight<span class="ellipsis"></span></span>';
+/* ══════════════════════════════════════
+   CONTACT FORM SUBMISSION (Formspree)
+   ══════════════════════════════════════ */
+function setupContactForm() {
+  const form = document.getElementById('contact-form');
+  const statusEl = document.getElementById('contact-status');
   
-  const newFact = await getAIFact(); // Use AI to generate new fact
-  localStorage.setItem('lastFact', newFact);
-  localStorage.setItem('lastFactDate', new Date().toDateString());
-  // Ensure stamp updates so scheduled-sync recognises this as a new fact
-  localStorage.setItem('lastFactStamp', new Date().toISOString());
-  typeFactIntoTerminal(newFact);
-});
+  if (!form) return;
 
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    statusEl.textContent = 'Sending…';
+    statusEl.className = '';
+    
+    const formData = new FormData(form);
+    
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        statusEl.textContent = '✓ Thanks for reaching out! I'll reply soon.';
+        statusEl.classList.add('success');
+        form.reset();
+        
+        // Clear status message after 5 seconds
+        setTimeout(() => {
+          statusEl.textContent = '';
+        }, 5000);
+      } else {
+        const json = await response.json().catch(() => ({}));
+        statusEl.textContent = '✗ ' + (json.error || 'Failed to send. Please try again or email directly.');
+        statusEl.classList.add('error');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      statusEl.textContent = '✗ Network error — please try emailing directly: prayagnepal2060@gmail.com';
+      statusEl.classList.add('error');
+    }
+  });
+}
 
 /* ══════════════════════════════════════
    4. STICKY NAV SHADOW ON SCROLL
