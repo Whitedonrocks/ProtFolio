@@ -63,18 +63,8 @@
     document.querySelector('[data-phase="02"] .cert-pct').textContent = `~${Math.max(55, prog)}%`;
   }
 
-  // Update remaining phases based on date progress
-  for (let i = 3; i <= 7; i++) {
-    const phase = String(i).padStart(2, '0');
-    const progressBar = document.querySelector(`[data-phase="${phase}"] .cert-progress-fill`);
-    const pctText = document.querySelector(`[data-phase="${phase}"] .cert-pct`);
-    
-    if (progressBar && pctText) {
-      const prog = calculateProgress(phaseTargets[phase], false);
-      progressBar.style.setProperty('--fill', `${prog}%`);
-      pctText.textContent = `${prog}%`;
-    }
-  }
+  // Keep future phases at their stated roadmap values until work actually starts.
+  // Their percentage and target month are already defined in the HTML.
 
   // Update compact hero cert badge (if present)
   try {
@@ -385,7 +375,7 @@ async function getAIFact() {
 
 async function getScheduledFact() {
   try {
-    const response = await fetch('./data/daily-quote.json', { cache: 'no-store' });
+    const response = await fetch('/api/daily-quote', { cache: 'no-store' });
 
     if (!response.ok) {
       return null;
