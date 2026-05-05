@@ -713,3 +713,51 @@ function setupContactForm() {
     }
   }, 3000);
 })();
+
+// New Fact Button Handler
+(function factButtonHandler() {
+  const refreshBtn = document.getElementById('refresh-fact');
+  if (!refreshBtn) return;
+
+  refreshBtn.addEventListener('click', async () => {
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = '⟳ Loading...';
+
+    try {
+      const response = await fetch(`/api/get-fact?ts=${Date.now()}`, { cache: 'no-store' });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch fact');
+      }
+
+      const data = await response.json();
+      const fact = data.fact || 'Unable to load fact';
+
+      // Display the fact
+      typeFactIntoTerminal(fact);
+
+      // Update localStorage with the fact
+      localStorage.setItem('lastFact', fact);
+      localStorage.setItem('lastFactStamp', new Date().toISOString());
+
+      // Log status to console
+      if (data.generatedNewFact) {
+        console.log(`✓ New AI fact generated (#${data.generationCount})`);
+      }
+
+      if (data.cooldownActive) {
+        console.log(`⏱ Cooldown active: ${data.cooldownRemainingMinutes}m remaining until next generation`);
+      }
+
+      if (data.persisted) {
+        console.log(`✓ Fact persisted to GitHub (commit: ${data.commit})`);
+      }
+    } catch (error) {
+      console.error('Error fetching new fact:', error);
+      typeFactIntoTerminal('Error loading fact. Please try again.');
+    } finally {
+      refreshBtn.disabled = false;
+      refreshBtn.textContent = '↻ New Fact';
+    }
+  });
+})();
