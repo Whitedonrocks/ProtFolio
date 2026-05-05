@@ -50,8 +50,9 @@
     "Incident Response Plans define procedures for detecting, containing, and recovering from security breaches. Regular drills improve readiness.",
     "Cryptography protects data confidentiality and integrity. Strong encryption algorithms are resistant to known mathematical attacks.",
     "A digital certificate verifies that a public key belongs to a specific entity. Certificate Authorities (CAs) issue and verify these.",
-    "SSL/TLS protocols establish encrypted connections between clients and servers. Modern websites use TLS 1.2 or higher for security."
+    "SSL/TLS protocols establish encrypted connections between clients and servers. Modern websites use TLS 1.2 or higher for security.",
+    "Always maintain a robust backup strategy to protect against data loss from ransomware attacks and system failures."
   ],
-  "lastGeneratedAt": null,
-  "generationCount": 50
+  "lastGeneratedAt": "2026-05-05T09:41:50.744Z",
+  "generationCount": 51
 }
