@@ -452,14 +452,16 @@ function setupAutoFactUpdates() {
 }
 
 // Init on load
-document.addEventListener('DOMContentLoaded', () => {
-  console.log('DOMContentLoaded fired');
-  // Initialize terminal and typed name
-  initKaliTerminal();
-  typedName();
-  console.log('Both initKaliTerminal and typedName called');
-  
-  setTimeout(() => {
+if (document.readyState === 'loading') {
+  console.log('Document still loading, attaching DOMContentLoaded listener');
+  document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded fired');
+    // Initialize terminal and typed name
+    initKaliTerminal();
+    typedName();
+    console.log('Both initKaliTerminal and typedName called');
+    
+    setTimeout(() => {
     const today = new Date().toDateString();
     const lastFact = localStorage.getItem('lastFact');
     const lastFactStamp = localStorage.getItem('lastFactStamp');
@@ -508,6 +510,11 @@ document.addEventListener('DOMContentLoaded', () => {
     setupContactForm();
   }, 400);
 });
+} else {
+  console.log('Document already loaded, calling initKaliTerminal and typedName immediately');
+  initKaliTerminal();
+  typedName();
+}
 
 /* ══════════════════════════════════════
    CONTACT FORM SUBMISSION (Formspree)
