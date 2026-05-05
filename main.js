@@ -358,7 +358,8 @@ function getRandomFact() {
 async function getAIFact() {
   try {
     // Call Vercel serverless function (token is safe on server)
-    const response = await fetch('/api/get-fact');
+    // Add a timestamp and no-store to avoid any caching at CDN/browser level
+    const response = await fetch(`/api/get-fact?ts=${Date.now()}`, { cache: 'no-store' });
 
     if (!response.ok) {
       console.warn('API failed, using static facts');
@@ -485,6 +486,8 @@ document.getElementById('refresh-fact')?.addEventListener('click', async () => {
   const newFact = await getAIFact(); // Use AI to generate new fact
   localStorage.setItem('lastFact', newFact);
   localStorage.setItem('lastFactDate', new Date().toDateString());
+  // Ensure stamp updates so scheduled-sync recognises this as a new fact
+  localStorage.setItem('lastFactStamp', new Date().toISOString());
   typeFactIntoTerminal(newFact);
 });
 
