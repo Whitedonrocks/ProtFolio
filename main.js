@@ -107,9 +107,9 @@
 })();
 
 /* ══════════════════════════════════════
-   1. KALI LINUX TERMINAL
+   1. KALI LINUX TERMINAL (initialized in DOMContentLoaded)
    ══════════════════════════════════════ */
-(function initKaliTerminal() {
+function initKaliTerminal() {
   const input = document.getElementById('terminal-input');
   const output = document.getElementById('terminal-output');
   const sectionIndicator = document.getElementById('section-indicator');
@@ -271,13 +271,14 @@
       sectionIndicator.textContent = '[ portfolio ]';
     }
   });
-})();
+}
+
 
 
 /* ══════════════════════════════════════
-   2. TYPED NAME EFFECT
+   2. TYPED NAME EFFECT (initialized in DOMContentLoaded)
    ══════════════════════════════════════ */
-(function typedName() {
+function typedName() {
   const el = document.getElementById('typed-name');
   if (!el) return;
 
@@ -297,7 +298,7 @@
   }
 
   setTimeout(type, 600);
-})();
+}
 
 
 /* ══════════════════════════════════════
@@ -447,6 +448,10 @@ function setupAutoFactUpdates() {
 
 // Init on load
 document.addEventListener('DOMContentLoaded', () => {
+  // Initialize terminal and typed name
+  initKaliTerminal();
+  typedName();
+  
   setTimeout(() => {
     const today = new Date().toDateString();
     const lastFact = localStorage.getItem('lastFact');
