@@ -543,7 +543,7 @@ function setupContactForm() {
       });
 
       if (response.ok) {
-        statusEl.textContent = '✓ Thanks for reaching out! I'll reply soon.';
+        statusEl.textContent = "✓ Thanks for reaching out! I'll reply soon.";
         statusEl.classList.add('success');
         form.reset();
         
