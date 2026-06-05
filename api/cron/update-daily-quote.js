@@ -118,44 +118,6 @@ async function writeFactsToGitHub(payload) {
     body.sha = sha;
   }
 
-  const response = await fetch(apiUrl, {
-    method: 'PUT',
-    headers: {
-      ...headers,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(body)
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`GitHub update failed: ${errorText}`);
-  }
-
-  return response.json();
-}
-
-async function writeQuoteToGitHub(payload) {
-  const repo = resolveRepositorySlug();
-  const branch = process.env.VERCEL_GIT_COMMIT_REF || process.env.GITHUB_BRANCH || 'main';
-  const token = process.env.GITHUB_TOKEN;
-  const { nepalDate } = getNepalDateParts();
-
-  if (!repo || !repo.includes('/')) {
-    throw new Error('Missing repository owner/name slug (expected owner/repo)');
-  }
-
-  if (!token) {
-    throw new Error('Missing GITHUB_TOKEN');
-  }
-
-  const filePath = 'data/daily-quote.json';
-  const apiUrl = `https://api.github.com/repos/${repo}/contents/${filePath}`;
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    Accept: 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28'
-  };
 
   let sha;
   const existingResponse = await fetch(`${apiUrl}?ref=${encodeURIComponent(branch)}`, { headers });
